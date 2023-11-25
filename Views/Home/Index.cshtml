@@ -1,0 +1,486 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+@model DCTStore.ViewModels.HomeViewModel
+
+<!-- banner -->
+<div class="banner">
+	<div class="banner-overlay"></div>
+	<div class="container">
+		<div class="banner-info animated wow zoomIn" data-wow-delay=".5s">
+			<h3 id="bannerCaption">Welcome To DCT Store</h3>
+			<div class="wmuSlider example1">
+				<div class="wmuSliderWrapper">
+					<article style="position: absolute; width: 100%; opacity: 0;">
+						<div class="banner-wrap">
+							<div class="caption" style="position: absolute; bottom: 20px; left: 20px; color: white; background: rgba(0, 0, 0, 0.7); padding: 10px;">
+								<h3>Caption for Banner 1</h3>
+							</div>
+						</div>
+					</article>
+				</div>
+			</div>
+			<script src="~/store/js/jquery.wmuSlider.js"></script>
+			<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+			<script>
+				var bannerImages = [
+					'url(../store/images/banner.jpg) ',
+					'url(../store/images/banner2.jpg) ',
+					'url(../store/images/banner3.jpg) ',
+					'url(../store/images/banner4.jpg) '
+					// Add more image URLs as needed
+				];
+
+				var captions = [
+					'Praise Music',
+					'Worship Music',
+					'Audio Sermons'
+					// Add more captions in the same order as image URLs
+				];
+
+				var currentIndex = 0;
+
+				function changeBannerImage() {
+					var banner = $('.banner');
+					var bannerCaption = $('#bannerCaption');
+					banner.css('background-image', bannerImages[currentIndex]);
+					bannerCaption.text(captions[currentIndex]);
+					currentIndex = (currentIndex + 1) % bannerImages.length;
+				}
+
+				// Set the interval for changing the banner image (e.g., every 5 seconds)
+				var interval = setInterval(changeBannerImage, 5000);
+
+				// Stop the interval when the page unloads (optional)
+				$(window).on('unload', function () {
+					clearInterval(interval);
+				});
+			</script>
+		</div>
+	</div>
+</div>
+<!-- //banner -->
+<!-- banner-bottom -->
+<div class="banner-bottom">
+	<div class="container">
+		<div class="banner-bottom-grids">
+			<div class="banner-bottom-grid-left animated wow slideInLeft" data-wow-delay=".5s">
+				<div class="grid">
+					<figure class="effect-julia">
+						<img src="~/store/images/4.1.jpg" alt=" " class="img-responsive" />
+						<figcaption>
+							<h3>Download All</h3>
+							<div>
+								<button class="custom-button" id="localSermonsButton">Local Sermons</button>
+								<br />
+								<button class="custom-button" id="visitorSermonsButton">Visitor Sermons</button>
+							</div>
+						</figcaption>
+					</figure>
+				</div>
+			</div>
+			<div class="banner-bottom-grid-left1 animated wow slideInUp" data-wow-delay=".5s">
+				<div class="banner-bottom-grid-left-grid left1-grid grid-left-grid1">
+					<div class="banner-bottom-grid-left-grid1">
+						<img src="~/store/images/1.jpg" alt=" " class="img-responsive" />
+					</div>
+					<div class="banner-bottom-grid-left1-pos">
+						<p>Download All</p>
+						<br />
+						<button class="custom-button" id="downloadLyricsButton">DCT Lyrics</button>
+					</div>
+				</div>
+				<div class="banner-bottom-grid-left-grid left1-grid grid-left-grid1">
+					<div class="banner-bottom-grid-left-grid1">
+						<img src="~/store/images/2.jpg" alt=" " class="img-responsive" />
+					</div>
+					<div class="banner-bottom-grid-left1-position">
+						<div class="banner-bottom-grid-left1-pos1">
+							<p>Download All</p>
+							<button class="custom-button" id="downloadLyricsButton">Krefeld Sermons</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="banner-bottom-grid-right animated wow slideInRight" data-wow-delay=".5s">
+				<div class="grid">
+					<figure class="effect-julia">
+						<img src="~/store/images/1.1.jpg" alt=" " class="img-responsive" />
+						<figcaption>
+							<h3>Download All</h3>
+							<div>
+								<button class="custom-button" id="localSermonsButton">DCT Praise Music</button>
+								<button class="custom-button" id="visitorSermonsButton">DCT Worship Music</button>
+                                <button class="custom-button" id="visitorSermonsButton">DCT Special Songs</button>
+							</div>
+						</figcaption>
+					</figure>
+				</div>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+	</div>
+</div>
+<!-- //banner-bottom -->
+<!-- Recent DCT Sermons -->
+<div class="new-collections">
+	<div class="container">
+		<h3 class="animated wow zoomIn" data-wow-delay=".5s">Recent DCT Sermons</h3>
+		<p class="est animated wow zoomIn" data-wow-delay=".5s">
+			Download the latest sermons preached at the Durban Christian Tabernacle. Sermons are available in MP3 format, in Video, and can be downloaded for free. You can also stream the sermons DCT Store. Lastly, sermons are uploaded a day after service.
+		</p>
+		<div class="new-collections-grids">
+			@if (Model.RecentSermons.Count != null)
+			{
+				@foreach (var sermon in Model.RecentSermons)
+				{
+					<div class="col-md-3 new-collections-grid">
+						<div class="new-collections-grid1 animated wow slideInUp text-center" data-wow-delay=".5s">
+							<div class="new-collections-grid1-image">
+								<a href="single.html" class="product-image"><img src="@sermon.MediaType.Image" alt=" " class="img-responsive"></a>
+								<div class="new-collections-grid1-image-pos products-right-grids-pos">
+									<a asp-action="Details" asp-route-id="@sermon.SermonId">View Preaching</a>
+								</div>
+								<div class="new-collections-grid1-right products-right-grids-pos-right">
+									<div class="rating">
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/1.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/1.png" alt=" " class="img-responsive">
+										</div>
+										<div class="clearfix"> </div>
+									</div>
+								</div>
+							</div>
+							<h4><a href="single.html">@sermon.Title</a></h4>
+							<p>@sermon.Minister.Name</p>
+							<div class="simpleCart_shelfsermon products-right-grid1-add-cart">
+								<p> <span class="sermon_price">@sermon.DatePreached</span><a class="item_add" href="#">add to cart </a></p>
+								<p><a class="item_add" href="#">Download Now </a></p>
+							</div>
+						</div>
+					</div>
+
+				}
+			}
+			else
+			{
+				<p>No recent sermons available.</p>
+			}
+			
+		</div>
+	</div>
+</div>
+<!-- //Recent DCT Sermons -->
+<!-- Krefeld -->
+<div class="new-collections">
+	<div class="container">
+		<h3 class="animated wow zoomIn" data-wow-delay=".5s">Recent Krefeld Sermons</h3>
+		<p class="est animated wow zoomIn" data-wow-delay=".5s">
+			Download the latest Krefeld preached at the Durban Christian Tabernacle. Sermons are available in MP3 format, in Video and can be downloaded for free. You can also stream the sermons DCT Store. lasltly sermons are uploaded a day after service
+		</p>
+		<div class="new-collections-grids">
+			@if (Model.RecentKrefeldSermons.Count != null)
+			{
+				@foreach (var krefeld in Model.RecentKrefeldSermons)
+				{
+					<div class="col-md-3 new-collections-grid">
+						<div class="new-collections-grid1 animated wow slideInUp text-center" data-wow-delay=".5s">
+							<div class="new-collections-grid1-image">
+								<a href="single.html" class="product-image"><img src="@krefeld.MediaType.Image" alt=" " class="img-responsive"></a>
+								<div class="new-collections-grid1-image-pos products-right-grids-pos">
+									<a asp-action="Details" asp-route-id="@krefeld.SermonId">View Preaching</a>
+								</div>
+								<div class="new-collections-grid1-right products-right-grids-pos-right">
+									<div class="rating">
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/1.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/1.png" alt=" " class="img-responsive">
+										</div>
+										<div class="clearfix"> </div>
+									</div>
+								</div>
+							</div>
+							<h4><a href="single.html">@krefeld.Title</a></h4>
+							<p>@krefeld.Minister.Name</p>
+							<div class="simpleCart_shelfsermon products-right-grid1-add-cart">
+								<p> <span class="sermon_price">@krefeld.DatePreached</span><a class="item_add" href="#">add to cart </a></p>
+								<p><a class="item_add" href="#">Download Now </a></p>
+							</div>
+						</div>
+					</div>
+
+				}
+			}
+			else
+			{
+				<p>No recent sermons available.</p>
+			}
+		</div>
+	</div>
+</div>
+<!-- //Krefeld -->
+<!-- DCT Music -->
+<div class="new-collections">
+	<div class="container">
+		<h3 class="animated wow zoomIn" data-wow-delay=".5s">Latest DCT Music</h3>
+		<p class="est animated wow zoomIn" data-wow-delay=".5s">
+			Download the latest music sung and recorded at the Durban Christian Tabernacle. Music are available in MP3 format, and can be downloaded for free. You can also stream the music on DCT Store and sing along with lyrics provided.
+		</p>
+		<div class="new-collections-grids">
+			@if (Model.RecentMusic.Count != null)
+			{
+				@foreach (var music in Model.RecentMusic)
+				{
+					<div class="col-md-3 new-collections-grid">
+						<div class="new-collections-grid1 animated wow slideInUp text-center" data-wow-delay=".5s">
+							<div class="new-collections-grid1-image">
+								<a href="single.html" class="product-image"><img src="@music.MediaType.Image" alt=" " class="img-responsive"></a>
+								<div class="new-collections-grid1-image-pos products-right-grids-pos">
+									<a asp-action="Details" asp-route-id="@music.MusicId">View Preaching</a>
+								</div>
+								<div class="new-collections-grid1-right products-right-grids-pos-right">
+									<div class="rating">
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/1.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/1.png" alt=" " class="img-responsive">
+										</div>
+										<div class="clearfix"> </div>
+									</div>
+								</div>
+							</div>
+							<h4><a href="single.html">@music.Title</a></h4>
+							<div class="simpleCart_shelfsermon products-right-grid1-add-cart">
+								<p><a class="item_add" href="#">Download Now </a></p>
+							</div>
+						</div>
+					</div>
+
+				}
+			}
+			else
+			{
+				<p>No recent sermons available.</p>
+			}
+		</div>
+	</div>
+</div>
+<!-- //DCT Music -->
+<!-- Khuzumpi Shezi -->
+<div class="new-collections">
+	<div class="container">
+		<h3 class="animated wow zoomIn" data-wow-delay=".5s">Latest DCT Music</h3>
+		<p class="est animated wow zoomIn" data-wow-delay=".5s">
+			Download the latest music sung and recorded at the Durban Christian Tabernacle. Music are available in MP3 format, and can be downloaded for free. You can also stream the music on DCT Store and sing along with lyrics provided.
+		</p>
+		<div class="new-collections-grids">
+			@if (Model.RecentKhuzimpiSheziPraiseAndWorship.Count != null)
+			{
+				@foreach (var KP in Model.RecentMusic)
+				{
+					<div class="col-md-3 new-collections-grid">
+						<div class="new-collections-grid1 animated wow slideInUp text-center" data-wow-delay=".5s">
+							<div class="new-collections-grid1-image">
+								<a href="single.html" class="product-image"><img src="@KP.MediaType.Image" alt=" " class="img-responsive"></a>
+								<div class="new-collections-grid1-image-pos products-right-grids-pos">
+									<a asp-action="Details" asp-route-id="@KP.MusicId">View Preaching</a>
+								</div>
+								<div class="new-collections-grid1-right products-right-grids-pos-right">
+									<div class="rating">
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/1.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/1.png" alt=" " class="img-responsive">
+										</div>
+										<div class="clearfix"> </div>
+									</div>
+								</div>
+							</div>
+							<h4><a href="single.html">@KP.Title</a></h4>
+							<div class="simpleCart_shelfsermon products-right-grid1-add-cart">
+								<p><a class="item_add" href="#">Download Now </a></p>
+							</div>
+						</div>
+					</div>
+
+				}
+			}
+			else
+			{
+				<p>No recent sermons available.</p>
+			}
+		</div>
+	</div>
+</div>
+<!-- //Khuzumpi Shezi -->
+<!-- DCT Lyric -->
+<div class="new-collections">
+	<div class="container">
+		<h3 class="animated wow zoomIn" data-wow-delay=".5s">Latest DCT Music</h3>
+		<p class="est animated wow zoomIn" data-wow-delay=".5s">
+			Download the latest music sung and recorded at the Durban Christian Tabernacle. Music are available in MP3 format, and can be downloaded for free. You can also stream the music on DCT Store and sing along with lyrics provided.
+		</p>
+		<div class="new-collections-grids">
+			@if (Model.RecentLyrics.Count != null)
+			{
+				@foreach (var lyric in Model.RecentLyrics)
+				{
+					<div class="col-md-3 new-collections-grid">
+						<div class="new-collections-grid1 animated wow slideInUp text-center" data-wow-delay=".5s">
+							<div class="new-collections-grid1-image">
+								<a href="single.html" class="product-image"><img src="@lyric.LyricThumbnail" alt="Thumbnail" class="img-thumbnail" /></a>
+								<div class="new-collections-grid1-image-pos products-right-grids-pos">
+									<a asp-action="Details" asp-route-id="@lyric.LyricId">View Preaching</a>
+								</div>
+								<div class="new-collections-grid1-right products-right-grids-pos-right">
+									<div class="rating">
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/1.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/1.png" alt=" " class="img-responsive">
+										</div>
+										<div class="clearfix"> </div>
+									</div>
+								</div>
+							</div>
+							<h4><a href="single.html">@lyric.Title</a></h4>
+							<div class="simpleCart_shelfsermon products-right-grid1-add-cart">
+								<p><a class="item_add" href="#">Download Now </a></p>
+							</div>
+						</div>
+					</div>
+
+				}
+			}
+			else
+			{
+				<p>No recent sermons available.</p>
+			}
+		</div>
+	</div>
+</div>
+<!-- //DCT Lyric -->
+<!-- new-timer -->
+<div class="timer">
+	<div class="container">
+		<div class="timer-grids">
+			<div class="col-md-8 timer-grid-left animated wow slideInLeft" data-wow-delay=".5s">
+				<h3><a href="products.html">Tune In To DCT Live</a></h3>
+				<div class="rating">
+					<div class="rating-left">
+						<img src="~/store/images/2.png" alt=" " class="img-responsive" />
+					</div>
+					<div class="rating-left">
+						<img src="~/store/images/2.png" alt=" " class="img-responsive" />
+					</div>
+					<div class="rating-left">
+						<img src="~/store/images/2.png" alt=" " class="img-responsive" />
+					</div>
+					<div class="rating-left">
+						<img src="~/store/images/2.png" alt=" " class="img-responsive" />
+					</div>
+					<div class="rating-left">
+						<img src="~/store/images/1.png" alt=" " class="img-responsive" />
+					</div>
+					<div class="clearfix"> </div>
+				</div>
+				<div class="new-collections-grid1-left simpleCart_shelfItem timer-grid-left-price">
+					<p><i>$580</i> <span class="item_price">$550</span></p>
+					<h4>
+						Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam,
+						nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit
+						qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui
+						dolorem eum fugiat quo voluptas nulla pariatur.
+					</h4>
+					<p><a class="item_add timer_add" href="#">add to cart </a></p>
+				</div>
+				<div id="counter"> </div>
+				<script src="~/store/js/jquery.countdown.js"></script>
+				<script src="~/store/js/script.js"></script>
+			</div>
+			<div class="col-md-4 timer-grid-right animated wow slideInRight" data-wow-delay=".5s">
+				<div class="timer-grid-right1">
+					<img src="~/store/images/17.jpg" alt=" " class="img-responsive" />
+					<div class="timer-grid-right-pos">
+						<h4>Special Offer</h4>
+					</div>
+				</div>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+	</div>
+</div>
+<!-- //new-timer -->
+<!-- collections-bottom -->
+<div class="collections-bottom">
+	<div class="container">
+		@* <div class="collections-bottom-grids">
+			<div class="collections-bottom-grid animated wow slideInLeft" data-wow-delay=".5s">
+				<h3>45% Offer For <span>Women & Children's</span></h3>
+			</div>
+		</div> *@
+		<div class="newsletter animated wow slideInUp" data-wow-delay=".5s">
+			<h3>Newsletter</h3>
+			<p>Join us now to get all news and special offers.</p>
+			<form>
+				<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+				<input type="email" value="Enter your email address" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Enter your email address';}" required="">
+				<input type="submit" value="Join Us">
+			</form>
+		</div>
+	</div>
+</div>
+<!-- //collections-bottom -->
