@@ -5,14 +5,18 @@ using Microsoft.Extensions.Hosting; // Add this using directive
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using DCTStore.Repository;
+using DCTStore.Models;
 
 public class Program
 {
     private readonly IWebHostEnvironment _env; // Add the private field
+    private readonly CartItemRepository _cartItemRepository;
 
-    public Program(IWebHostEnvironment env) // Inject IWebHostEnvironment here
+    public Program(IWebHostEnvironment env, CartItemRepository cartItemRepository) // Inject IWebHostEnvironment here
     {
         _env = env;
+        _cartItemRepository = cartItemRepository; // Initialize the field
     }
 
     public static async Task Main(string[] args)
@@ -32,8 +36,24 @@ public class Program
 			.AddRoles<IdentityRole>()
 			.AddEntityFrameworkStores<ApplicationDbContext>();
 		builder.Services.AddControllersWithViews();
+		builder.Services.AddScoped<CartItemRepository>();
+        builder.Services.AddHttpClient(); // Add this line
+		builder.Services.AddScoped<Cart>();
+		builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+		// Add session services
+		builder.Services.AddDistributedMemoryCache();
+		builder.Services.AddSession(options =>
+		{
+			options.IdleTimeout = TimeSpan.FromMinutes(30);
+			options.Cookie.HttpOnly = true;
+			options.Cookie.IsEssential = true;
+		});
+
+
 
 		var app = builder.Build();
+
+       
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -54,7 +74,10 @@ public class Program
 
         app.UseAuthorization();
 
-        app.MapControllerRoute(
+		// Use session middleware
+		app.UseSession();
+
+		app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         app.MapRazorPages();

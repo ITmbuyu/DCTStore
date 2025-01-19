@@ -1,4 +1,8 @@
 ﻿@model IEnumerable<DCTStore.Models.Minister>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
 
 @{
     ViewData["Title"] = "Index";
@@ -6,42 +10,291 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MininsterType)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MininsterType.Type)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MinisterId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MinisterId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MinisterId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<!-- breadcrumbs -->
+<div class="breadcrumbs">
+    <div class="container">
+        <ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+            <li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+            <li class="active">Furniture</li>
+        </ol>
+    </div>
+</div>
+<div class="products">
+    <div class="container">
+        <div class="col-md-4 products-left">
+            <div class="filter-price animated wow slideInUp" data-wow-delay=".5s">
+                <h3>Filter By Price</h3>
+                <ul class="dropdown-menu1">
+                    <li>
+                        <a href="">
+                            <div id="slider-range"></div>
+                            <input type="text" id="amount" style="border: 0" />
+                        </a>
+                    </li>
+                </ul>
+                <script type='text/javascript'>
+                    //<![CDATA[
+                    $(window).load(function () {
+                        $("#slider-range").slider({
+                            range: true,
+                            min: 0,
+                            max: 100000,
+                            values: [10000, 60000],
+                            slide: function (event, ui) {
+                                $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+                            }
+                        });
+                        $("#amount").val("$" + $("#slider-range").slider("values", 0) + " - $" + $("#slider-range").slider("values", 1));
+
+
+                    });//]]>
+                </script>
+                <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+                <!---->
+            </div>
+            <div class="categories animated wow slideInUp" data-wow-delay=".5s">
+                <h3>Categories</h3>
+                <ul class="cate">
+                    <li><a href="furniture.html">Best Selling</a> <span>(15)</span></li>
+                    <li><a href="furniture.html">Home Collections</a> <span>(16)</span></li>
+                    <ul>
+                        <li><a href="furniture.html">Cookware</a> <span>(2)</span></li>
+                        <li><a href="furniture.html">Sofas</a> <span>(5)</span></li>
+                        <li><a href="furniture.html">Dining Tables</a> <span>(1)</span></li>
+                        <li><a href="furniture.html">New Arrivals</a> <span>(0)</span></li>
+                        <li><a href="furniture.html">Home Decore</a> <span>(1)</span></li>
+                    </ul>
+                    <li><a href="furniture.html">Sales</a> <span>(15)</span></li>
+                    <li><a href="furniture.html">Decorations</a> <span>(15)</span></li>
+                    <ul>
+                        <li><a href="furniture.html">Wall Clock</a> <span>(2)</span></li>
+                        <li><a href="furniture.html">New Arrivals</a> <span>(0)</span></li>
+                        <li><a href="furniture.html">Lighting</a> <span>(1)</span></li>
+                        <li><a href="furniture.html">Top Brands</a> <span>(0)</span></li>
+                    </ul>
+                </ul>
+            </div>
+            <div class="new-products animated wow slideInUp" data-wow-delay=".5s">
+                <h3>New Products</h3>
+                <div class="new-products-grids">
+                    <div class="new-products-grid">
+                        <div class="new-products-grid-left">
+                            <a href="single.html"><img src="~/store/images/6.jpg" alt=" " class="img-responsive" /></a>
+                        </div>
+                        <div class="new-products-grid-right">
+                            <h4><a href="single.html">occaecat cupidatat</a></h4>
+                            <div class="rating">
+                                <div class="rating-left">
+                                    <img src="~/store/images/2.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="rating-left">
+                                    <img src="~/store/images/2.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="rating-left">
+                                    <img src="~/store/images/2.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="rating-left">
+                                    <img src="~/store/images/1.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="rating-left">
+                                    <img src="~/store/images/1.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="clearfix"> </div>
+                            </div>
+                            <div class="simpleCart_shelfItem new-products-grid-right-add-cart">
+                                <p> <span class="item_price">$180</span><a class="item_add" href="#">add to cart </a></p>
+                            </div>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="new-products-grid">
+                        <div class="new-products-grid-left">
+                            <a href="single.html"><img src="~/store/images/9.jpg" alt=" " class="img-responsive" /></a>
+                        </div>
+                        <div class="new-products-grid-right">
+                            <h4><a href="single.html">eum fugiat quo</a></h4>
+                            <div class="rating">
+                                <div class="rating-left">
+                                    <img src="~/store/images/2.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="rating-left">
+                                    <img src="~/store/images/2.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="rating-left">
+                                    <img src="~/store/images/2.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="rating-left">
+                                    <img src="~/store/images/1.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="rating-left">
+                                    <img src="~/store/images/1.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="clearfix"> </div>
+                            </div>
+                            <div class="simpleCart_shelfItem new-products-grid-right-add-cart">
+                                <p> <span class="item_price">$250</span><a class="item_add" href="#">add to cart </a></p>
+                            </div>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="new-products-grid">
+                        <div class="new-products-grid-left">
+                            <a href="single.html"><img src="~/store/images/11.jpg" alt=" " class="img-responsive" /></a>
+                        </div>
+                        <div class="new-products-grid-right">
+                            <h4><a href="single.html">officia deserunt</a></h4>
+                            <div class="rating">
+                                <div class="rating-left">
+                                    <img src="~/store/images/2.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="rating-left">
+                                    <img src="~/store/images/2.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="rating-left">
+                                    <img src="~/store/images/2.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="rating-left">
+                                    <img src="~/store/images/1.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="rating-left">
+                                    <img src="~/store/images/1.png" alt=" " class="img-responsive">
+                                </div>
+                                <div class="clearfix"> </div>
+                            </div>
+                            <div class="simpleCart_shelfItem new-products-grid-right-add-cart">
+                                <p> <span class="item_price">$259</span><a class="item_add" href="#">add to cart </a></p>
+                            </div>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                </div>
+            </div>
+            <div class="men-position animated wow slideInUp" data-wow-delay=".5s">
+                <a href="single.html"><img src="~/store/images/29.jpg" alt=" " class="img-responsive" /></a>
+                <div class="men-position-pos">
+                    <h4>Summer collection</h4>
+                    <h5><span>55%</span> Flat Discount</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 products-right">
+            <div class="products-right-grid">
+                <div class="products-right-grids animated wow slideInRight" data-wow-delay=".5s">
+                     <div class="clearfix"> </div>
+                    <div>
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Create" class="btn btn-default">Create New</a>
+                        }
+                        }
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+                <div class="products-right-grids-position animated wow slideInRight" data-wow-delay=".5s">
+                    <img src="~/store/images/28.jpg" alt=" " class="img-responsive" />
+                    <div class="products-right-grids-position1">
+                        <h4>2016 New Collection</h4>
+                        <p>
+                            Temporibus autem quibusdam et aut officiis debitis aut rerum
+                            necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae
+                            non recusandae.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="products-right-grids-bottom">
+                @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                {
+                    var counter = 0;
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-md-4 products-right-grids-bottom-grid">
+                            <div class="new-collections-grid1 products-right-grid1 animated wow slideInUp" data-wow-delay=".5s">
+                                <div class="new-collections-grid1-image">
+                                    <a href="single.html" class="product-image"><img src="@item.Image" alt="Thumbnail" class="img-thumbnail" /></a>
+                                    <div class="new-collections-grid1-image-pos products-right-grids-pos">
+                                        <a asp-action="Details" asp-route-id="@item.MinisterId">View Lyrics</a>
+                                    </div>
+                                </div>
+                                <h4><a href="single.html">@item.Name</a></h4>
+                                <h4><a href="single.html">@item.MininsterType.Type</a></h4>
+                                <div class="simpleCart_shelfItem products-right-grid1-add-cart">
+                                    <p><a asp-action="SermonsForMinister" asp-route-ministerId="@item.MinisterId">View Sermons</a></p>
+                                    <p><a asp-action="Edit" asp-route-id="@item.MinisterId">Edit</a></p>
+                                    <p><a asp-action="Details" asp-route-id="@item.MinisterId">Details</a></p>
+                                    <p><a asp-action="Delete" asp-route-id="@item.MinisterId">Delete</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        counter++;
+
+                        if (counter % 3 == 0)
+                        {
+                            <div class="clearfix"></div>
+                        }
+                        
+                    }
+                }
+                else
+                {
+                    var counter = 0;
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-md-4 products-right-grids-bottom-grid">
+                            <div class="new-collections-grid1 products-right-grid1 animated wow slideInUp" data-wow-delay=".5s">
+                                <div class="new-collections-grid1-image">
+                                    <a href="single.html" class="product-image"><img src="@item.Image" alt="Thumbnail" class="img-thumbnail" /></a>
+                                    <div class="new-collections-grid1-image-pos products-right-grids-pos">
+                                        <a asp-action="Details" asp-route-id="@item.MinisterId">View Lyrics</a>
+                                    </div>
+                                </div>
+                                <h4><a href="single.html">@item.Name</a></h4>
+                                <h4><a href="single.html">@item.MininsterType.Type</a></h4>
+                                <div class="simpleCart_shelfItem products-right-grid1-add-cart">
+                                    <p><a asp-action="SermonsForMinister" asp-route-ministerId="@item.MinisterId">View Sermons</a></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        counter++;
+
+                        if (counter % 3 == 0)
+                        {
+                            <div class="clearfix"></div>
+                        }
+                        
+                    }
+                }
+
+                <div class="clearfix"></div>
+            </div>
+
+            @if (ViewBag.TotalPages > 1)
+            {
+                <nav class="numbering animated wow slideInRight" data-wow-delay=".5s">
+                    <ul class="pagination paging">
+                        <li>
+                            <a href="?page=1" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="@(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a href="?page=@i">@i</a>
+                            </li>
+                        }
+                        <li>
+                            <a href="?page=@ViewBag.TotalPages" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+
+        </div>
+        <div class="clearfix"> </div>
+    </div>
+</div>
+<!-- //breadcrumbs -->

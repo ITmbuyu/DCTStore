@@ -57,7 +57,7 @@ namespace DCTStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SermonTypeId,Type,MinisterId")] SermonType sermonType)
+        public async Task<IActionResult> Create([Bind("SermonTypeId,Type,MinisterId,TypeDownloadLink")] SermonType sermonType)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace DCTStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SermonTypeId,Type,MinisterId")] SermonType sermonType)
+        public async Task<IActionResult> Edit(int id, [Bind("SermonTypeId,Type,MinisterId,TypeDownloadLink")] SermonType sermonType)
         {
             if (id != sermonType.SermonTypeId)
             {

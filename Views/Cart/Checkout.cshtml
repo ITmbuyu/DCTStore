@@ -1,0 +1,201 @@
+﻿@model CheckoutViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Adjust the path based on your folder structure
+}
+
+<h2>Your Shopping Cart</h2>
+
+<!-- breadcrumbs -->
+<div class="breadcrumbs">
+    <div class="container">
+        <ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+            <li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+            <li class="active">Checkout Page</li>
+        </ol>
+    </div>
+</div>
+<!-- //breadcrumbs -->
+<!-- checkout -->
+<div class="checkout">
+    <div class="container">
+        <h3 class="animated wow slideInLeft" data-wow-delay=".5s">Your shopping cart contains: <span>@ViewBag.TotalItems</span></h3>
+        <div class="checkout-right animated wow slideInUp" data-wow-delay=".5s">
+            <table class="timetable_sub">
+                <thead>
+                    <tr>
+                        <th>ItemId</th>
+                        <th>ItemCategory</th>
+                        <th>Title</th>
+                        <th>MediaType</th>
+                        <th>Audio</th>
+                        <th>Video</th>
+                        <th>Price</th>
+                        <th>Remove Item </th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model.CartItems)
+                {
+                    <tr class="rem1">
+                        <td class="invert">@item.ItemId</td>
+                        <td class="invert">@item.ItemCategory</td>
+                        <td class="invert">@item.Title</td>
+                        <td class="invert-image"><a><img src="@item.imagemedia" alt=" " class="img-responsive" /></a></td>
+                        <td class="invert">
+                            <div  data-wow-delay=".5s">
+                                <button class="btn btn-primary" onclick="window.location.href='@item.MediaLink'">
+                                   Download Audio
+                                </button>
+                            </div>
+                        </td>
+                        <td class="invert">
+                            @if (item.VideoMediaLink != null)
+                            {
+                                <div  data-wow-delay=".5s">
+                                    <button class="btn btn-primary" onclick="window.location.href='@item.VideoMediaLink'">
+                                       Download Video
+                                    </button>
+                                </div>
+                            }
+                        </td>
+                        <td class="invert">
+                            <span class="currency">0</span>
+                        </td>
+                        <td class="invert">
+                            <div class="rem">
+                                <div class="close1"> </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="checkout-left">
+            <div class="checkout-left-basket animated wow slideInLeft" data-wow-delay=".5s">
+                <h4>Matthew 10:8</h4>
+               @*  <ul>
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <li>@item.Title <i>-</i> <span>0</span></li>
+                    }
+                </ul> *@
+                <h2>"Freely You Have Received;
+                    <br /> Freely Give"</h2>
+                <div class="separator"></div>
+                <h2>Total: <span class="currency">0</span></h2>
+
+            </div>
+            <div class="checkout-right-basket animated wow slideInRight" data-wow-delay=".5s">
+                <form asp-controller="Cart" asp-action="DownloadItems" method="post">
+                    
+
+                        <button class="btn btn-primary" type="submit">
+                            Download All Items
+                        </button>
+                    }
+                   @*  <button class="btn btn-primary" type="submit">
+                        Download All Items
+                    </button> *@
+                </form>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+    </div>
+</div>
+<!-- //checkout -->
+<style>
+    .checkout-left-basket {
+        font-family: 'Courier New', Courier, monospace; /* Traditional receipt font */
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin: 20px 0;
+        max-width: 400px;
+        background-color: #f9f9f9;
+    }
+
+        .checkout-left-basket h4 {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .checkout-left-basket h1 {
+            text-align: center;
+            font-size: 16px;
+            font-weight: normal;
+            line-height: 1.5;
+        }
+
+        .checkout-left-basket h2 {
+            text-align: right;
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+    .separator {
+        border-bottom: 1px dotted #000;
+        margin: 20px 0;
+    }
+
+    .currency {
+        font-weight: bold;
+    }
+
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('.close1').on('click', function () {
+            $(this).closest('.rem1').fadeOut('slow', function () {
+                $(this).remove();
+            });
+        });
+
+        $('.value-plus').on('click', function () {
+            var divUpd = $(this).parent().find('.value');
+            var newVal = parseInt(divUpd.text(), 10) + 1;
+            divUpd.text(newVal);
+        });
+
+        $('.value-minus').on('click', function () {
+            var divUpd = $(this).parent().find('.value');
+            var newVal = parseInt(divUpd.text(), 10) - 1;
+            if (newVal >= 1) divUpd.text(newVal);
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Function to detect browser's currency based on locale
+        function detectCurrency() {
+            // You could map the locale to a currency symbol here
+            // This is just an example, you can adjust this mapping
+            const locale = navigator.language || 'en-US'; // Browser locale
+            const currencies = {
+                'en-US': 'USD',
+                'en-GB': 'GBP',
+                'de-DE': 'EUR',
+                'ja-JP': 'JPY'
+            };
+
+            // Default currency USD if not in the map
+            return currencies[locale] || 'ZAR';
+        }
+
+        // Define a function to format currency based on the user's locale
+        function formatCurrency(amount) {
+            const currency = detectCurrency();
+            return new Intl.NumberFormat(navigator.language, {
+                style: 'currency',
+                currency: currency
+            }).format(amount);
+        }
+
+        // Apply formatting to all elements with class 'currency'
+        document.querySelectorAll('.currency').forEach(function (element) {
+            let amount = parseFloat(element.textContent); // Replace '0' with dynamic values if needed
+            element.textContent = formatCurrency(amount);
+        });
+    });
+
+</script>

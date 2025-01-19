@@ -32,9 +32,10 @@ namespace DCTStore.Controllers
         {
 			// Get the first 8 latest sermons excluding Krefeld Preaching
 			var recentSermons = _context.Sermons
+				.Include(s => s.SermonType)
                 .Include(s => s.MediaType)
                 .Include(s => s.Minister)
-                .Where(s => s.MediaType.MediaTypeId != 8)
+                .Where(s => s.MediaType.Type != "Krefeld Preaching")
                 .OrderByDescending(s => s.DatePreached)
                 .Take(8)
                 .ToList();
@@ -43,7 +44,7 @@ namespace DCTStore.Controllers
 			// Get the first 8 latest music excluding mediatypeid 5 and 6
 			var recentMusic = _context.Musics
 				.Include(m => m.MediaType)
-				.Where(m => m.MediaType.MediaTypeId != 5 && m.MediaType.MediaTypeId != 6)
+				.Where(m => m.MediaType.Type == "NG Kerk Praise Songs" ||  m.MediaType.Type == "NG Kerk Worship Songs")
 				.OrderByDescending(m => m.DateUploaded)
 				.Take(8)
 				.ToList();
@@ -60,7 +61,7 @@ namespace DCTStore.Controllers
 			var recentKrefeldSermons = _context.Sermons
                 .Include(s => s.MediaType)
                 .Include(s => s.Minister)
-                .Where(s => s.MediaType.MediaTypeId == 8)
+                .Where(s => s.MediaType.Type== "Krefeld Preaching")
                 .OrderByDescending(s => s.DatePreached)
                 .Take(8)
                 .ToList();
@@ -68,21 +69,46 @@ namespace DCTStore.Controllers
             // get any 8 music where the media typeID is equal to 5 and 6 only
 			var recentKhuzimpiSheziPraiseAndWorship = _context.Musics
 				.Include(m => m.MediaType)
-				.Where(m => m.MediaType.MediaTypeId == 5 || m.MediaType.MediaTypeId == 6)
-				.OrderByDescending(m => m.DateUploaded)
+				.Where(m => m.MediaType.Type == "Khuzimpi Shezi Praise Songs" || m.MediaType.Type == "Khuzimpi Shezi Worship Songs" 
+				|| m.MediaType.Type == "Khuzimpi Shezi Special Songs" || m.MediaType.Type == "Khuzimpi Shezi Vocals"
+				|| m.MediaType.Type == "Khuzimpi Shezi Acoustics" || m.MediaType.Type == "Khuzimpi Shezi Instrumentals"
+				|| m.MediaType.Type == "Khuzimpi Shezi Piano" || m.MediaType.Type == "Khuzimpi Shezi Extended Music")
 				.Take(8)
 				.ToList();
-			
-			
-            
-            // You can create a ViewModel to hold both types of data if needed
-            var viewModel = new HomeViewModel
+
+			// get the latest 8 sermons, from each select the type and image of the sermon except for Krefeld Preaching type, take 1 sermon per type
+			var recentSermonsTopics = _context.Sermons
+				.Where(s => s.MediaType.Type != "Krefeld Preaching")
+			.GroupBy(s => s.SermonTypeId)
+			.Select(g => new SermonSubjects
+			{
+				SermonTypeId = g.Key.Value,
+				SermonType = g.First().SermonType.Type,
+				MediaType = g.First().MediaType,
+				DatePreached = g.First().DatePreached,
+				MinisterName = g.First().Minister.Name
+			})
+			.OrderByDescending(s => s.DatePreached)
+			.Take(8)
+			.ToList();
+
+
+
+
+
+
+
+
+
+			// You can create a ViewModel to hold both types of data if needed
+			var viewModel = new HomeViewModel
 			{
 				RecentSermons = recentSermons,
 				RecentMusic = recentMusic,
 				RecentLyrics = recentLyrics,
                 RecentKrefeldSermons = recentKrefeldSermons,
                 RecentKhuzimpiSheziPraiseAndWorship = recentKhuzimpiSheziPraiseAndWorship,
+				SermonSubjects = recentSermonsTopics
 				
 				
             };

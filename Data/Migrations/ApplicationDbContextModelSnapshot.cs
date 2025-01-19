@@ -17,10 +17,31 @@ namespace DCTStore.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.12")
+                .HasAnnotation("ProductVersion", "7.0.20")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("DCTStore.Models.DownloadAllMedia", b =>
+                {
+                    b.Property<int>("DownloadAllMediaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DownloadAllMediaId"));
+
+                    b.Property<string>("DownloadLink")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DownloadAllMediaId");
+
+                    b.ToTable("DownloadAllMedia");
+                });
 
             modelBuilder.Entity("DCTStore.Models.Lyric", b =>
                 {
@@ -38,13 +59,39 @@ namespace DCTStore.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("LyricTypeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("LyricId");
 
+                    b.HasIndex("LyricTypeId");
+
                     b.ToTable("Lyrics");
+                });
+
+            modelBuilder.Entity("DCTStore.Models.LyricType", b =>
+                {
+                    b.Property<int>("LyricTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LyricTypeId"));
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeDownloadLink")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LyricTypeId");
+
+                    b.ToTable("LyricTypes");
                 });
 
             modelBuilder.Entity("DCTStore.Models.MediaType", b =>
@@ -59,6 +106,10 @@ namespace DCTStore.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeDownloadLink")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -198,6 +249,10 @@ namespace DCTStore.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeDownloadLink")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -408,6 +463,15 @@ namespace DCTStore.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("DCTStore.Models.Lyric", b =>
+                {
+                    b.HasOne("DCTStore.Models.LyricType", "LyricType")
+                        .WithMany()
+                        .HasForeignKey("LyricTypeId");
+
+                    b.Navigation("LyricType");
                 });
 
             modelBuilder.Entity("DCTStore.Models.Minister", b =>

@@ -4,6 +4,24 @@
 @inject RoleManager<IdentityRole> RoleManager
 @model DCTStore.ViewModels.HomeViewModel
 
+@* <script>
+	document.addEventListener("DOMContentLoaded", function () {
+		var items = document.querySelectorAll('.new-collections-grid1');
+		var maxHeight = 0;
+
+		items.forEach(function (item) {
+			if (item.offsetHeight > maxHeight) {
+				maxHeight = item.offsetHeight;
+			}
+		});
+
+		items.forEach(function (item) {
+			item.style.height = maxHeight + 'px';
+		});
+	});
+
+</script> *@
+
 <!-- banner -->
 <div class="banner">
 	<div class="banner-overlay"></div>
@@ -28,14 +46,17 @@
 					'url(../store/images/banner.jpg) ',
 					'url(../store/images/banner2.jpg) ',
 					'url(../store/images/banner3.jpg) ',
-					'url(../store/images/banner4.jpg) '
+					'url(../store/images/banner4.jpg) ',
+					'url(../store/images/banner5.jpg) '
 					// Add more image URLs as needed
 				];
 
 				var captions = [
 					'Praise Music',
 					'Worship Music',
-					'Audio Sermons'
+					'Audio Sermons',
+					'',
+					''
 					// Add more captions in the same order as image URLs
 				];
 
@@ -140,7 +161,7 @@
 							<div class="new-collections-grid1-image">
 								<a href="single.html" class="product-image"><img src="@sermon.MediaType.Image" alt=" " class="img-responsive"></a>
 								<div class="new-collections-grid1-image-pos products-right-grids-pos">
-									<a asp-action="Details" asp-route-id="@sermon.SermonId">View Preaching</a>
+									<a asp-controller="Sermons" asp-action="Details" asp-route-id="@sermon.SermonId">View Preaching</a>
 								</div>
 								<div class="new-collections-grid1-right products-right-grids-pos-right">
 									<div class="rating">
@@ -163,11 +184,22 @@
 									</div>
 								</div>
 							</div>
-							<h4><a href="single.html">@sermon.Title</a></h4>
+							<h4><a asp-controller="Sermons" asp-action="Details" asp-route-id="@sermon.SermonId">@sermon.Title</a></h4>
 							<p>@sermon.Minister.Name</p>
 							<div class="simpleCart_shelfsermon products-right-grid1-add-cart">
-								<p> <span class="sermon_price">@sermon.DatePreached</span><a class="item_add" href="#">add to cart </a></p>
-								<p><a class="item_add" href="#">Download Now </a></p>
+								<p> <span class="sermon_price">@sermon.DatePreached</span><p>
+									<a class="item_add"
+									   href="#"
+									   data-itemid="@sermon.SermonId"
+									   data-itemcategory="Sermon"
+									   data-title="@sermon.Title"
+									   data-medialink="@sermon.SermonMediaLink"
+									   data-videomedialink="@sermon.SermonVideoLink"
+									   data-imagemedia="@sermon.MediaType.Image">
+										Add to Cart
+									</a>
+								</p>
+								<p><a asp-controller="Sermons" asp-action="DownloadSermon" asp-route-id="@sermon.SermonId">Download Now</a></p>
 							</div>
 						</div>
 					</div>
@@ -183,8 +215,81 @@
 	</div>
 </div>
 <!-- //Recent DCT Sermons -->
-<!-- Krefeld -->
+
+<!-- Recent DCT Subjects -->
 <div class="new-collections">
+	<div class="container">
+		<h3 class="animated wow zoomIn" data-wow-delay=".5s">Recent DCT Subjects</h3>
+		<p class="est animated wow zoomIn" data-wow-delay=".5s">
+			Download the latest sermons preached at the Durban Christian Tabernacle. Sermons are available in MP3 format, in Video, and can be downloaded for free. You can also stream the sermons DCT Store. Lastly, sermons are uploaded a day after service.
+		</p>
+		<div class="new-collections-grids">
+			@if (Model.RecentSermons.Count != null)
+			{
+				@foreach (var sermon in Model.SermonSubjects)
+				{
+					<div class="col-md-3 new-collections-grid">
+						<div class="new-collections-grid1 animated wow slideInUp text-center" data-wow-delay=".5s">
+							<div class="new-collections-grid1-image">
+								<a href="single.html" class="product-image"><img src="@sermon.MediaType.Image" alt=" " class="img-responsive"></a>
+								<div class="new-collections-grid1-image-pos products-right-grids-pos">
+									<a asp-controller="Sermons" asp-action="SermonsByType" asp-route-id="@sermon.SermonTypeId">View Preaching</a>
+								</div>
+								<div class="new-collections-grid1-right products-right-grids-pos-right">
+									<div class="rating">
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/2.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/1.png" alt=" " class="img-responsive">
+										</div>
+										<div class="rating-left">
+											<img src="~/store/images/1.png" alt=" " class="img-responsive">
+										</div>
+										<div class="clearfix"> </div>
+									</div>
+								</div>
+							</div>
+							<h4><a href="single.html">@sermon.SermonType</a></h4>
+							<p>@sermon.MinisterName</p>
+							<div class="simpleCart_shelfsermon products-right-grid1-add-cart">
+								<p> <span class="sermon_price">@sermon.DatePreached</span>
+									<a class="item_add"
+									   href="#"
+									   data-itemid="@sermon.SermonTypeId"
+									   data-itemcategory="Sermon Collection"
+									   data-title="@sermon.SermonType"
+									   data-medialink=""
+									   data-videomedialink=""
+									   data-imagemedia="@sermon.MediaType.Image">
+										Add to Cart
+									</a>
+								</p>
+								<p><a asp-controller="Sermons" asp-action="DownloadSermonsByType" asp-route-id="@sermon.SermonTypeId">Download Now</a></p>
+							</div>
+						</div>
+					</div>
+
+				}
+			}
+			else
+			{
+				<p>No recent sermons available.</p>
+			}
+
+		</div>
+	</div>
+</div>
+<!-- //Recent DCT Subjects -->
+
+<!-- Krefeld -->
+@* <div class="new-collections">
 	<div class="container">
 		<h3 class="animated wow zoomIn" data-wow-delay=".5s">Recent Krefeld Sermons</h3>
 		<p class="est animated wow zoomIn" data-wow-delay=".5s">
@@ -240,7 +345,7 @@
 			}
 		</div>
 	</div>
-</div>
+</div> *@
 <!-- //Krefeld -->
 <!-- DCT Music -->
 <div class="new-collections">
@@ -259,7 +364,7 @@
 							<div class="new-collections-grid1-image">
 								<a href="single.html" class="product-image"><img src="@music.MediaType.Image" alt=" " class="img-responsive"></a>
 								<div class="new-collections-grid1-image-pos products-right-grids-pos">
-									<a asp-action="Details" asp-route-id="@music.MusicId">View Preaching</a>
+									<a asp-controller="Musics" asp-action="Details" asp-route-id="@music.MusicId">View Preaching</a>
 								</div>
 								<div class="new-collections-grid1-right products-right-grids-pos-right">
 									<div class="rating">
@@ -284,6 +389,18 @@
 							</div>
 							<h4><a href="single.html">@music.Title</a></h4>
 							<div class="simpleCart_shelfsermon products-right-grid1-add-cart">
+								<p> <span class="sermon_price"></span>
+									<a class="item_add"
+									   href="#"
+									   data-itemid="@music.MusicId"
+									   data-itemcategory="Music"
+									   data-title="@music.Title"
+									   data-medialink="@music.MusicMediaLink"
+									   data-videomedialink=""
+									   data-imagemedia="@music.MediaType.Image">
+										Add to Cart
+									</a>
+								</p>
 								<p><a class="item_add" href="#">Download Now </a></p>
 							</div>
 						</div>
@@ -309,14 +426,14 @@
 		<div class="new-collections-grids">
 			@if (Model.RecentKhuzimpiSheziPraiseAndWorship.Count != null)
 			{
-				@foreach (var KP in Model.RecentMusic)
+				@foreach (var KP in Model.RecentKhuzimpiSheziPraiseAndWorship)
 				{
 					<div class="col-md-3 new-collections-grid">
 						<div class="new-collections-grid1 animated wow slideInUp text-center" data-wow-delay=".5s">
 							<div class="new-collections-grid1-image">
 								<a href="single.html" class="product-image"><img src="@KP.MediaType.Image" alt=" " class="img-responsive"></a>
 								<div class="new-collections-grid1-image-pos products-right-grids-pos">
-									<a asp-action="Details" asp-route-id="@KP.MusicId">View Preaching</a>
+									<a asp-controller="Musics" asp-action="Details" asp-route-id="@KP.MusicId">View Preaching</a>
 								</div>
 								<div class="new-collections-grid1-right products-right-grids-pos-right">
 									<div class="rating">
@@ -341,7 +458,19 @@
 							</div>
 							<h4><a href="single.html">@KP.Title</a></h4>
 							<div class="simpleCart_shelfsermon products-right-grid1-add-cart">
-								<p><a class="item_add" href="#">Download Now </a></p>
+								<p> <span class="sermon_price"></span>
+									<a class="item_add"
+									   href="#"
+									   data-itemid="@KP.MusicId"
+									   data-itemcategory="Music"
+									   data-title="@KP.Title"
+									   data-medialink="@KP.MusicMediaLink"
+									   data-videomedialink=""
+									   data-imagemedia="@KP.MediaType.Image">
+										Add to Cart
+									</a>
+								</p>
+								<p><a asp-controller="Musics" asp-action="DownloadMusic" asp-route-id="@KP.MusicId">Download Now</a></p>
 							</div>
 						</div>
 					</div>
@@ -373,7 +502,7 @@
 							<div class="new-collections-grid1-image">
 								<a href="single.html" class="product-image"><img src="@lyric.LyricThumbnail" alt="Thumbnail" class="img-thumbnail" /></a>
 								<div class="new-collections-grid1-image-pos products-right-grids-pos">
-									<a asp-action="Details" asp-route-id="@lyric.LyricId">View Preaching</a>
+									<a asp-controller="Lyrics" asp-action="Details" asp-route-id="@lyric.LyricId">View Preaching</a>
 								</div>
 								<div class="new-collections-grid1-right products-right-grids-pos-right">
 									<div class="rating">
@@ -398,7 +527,19 @@
 							</div>
 							<h4><a href="single.html">@lyric.Title</a></h4>
 							<div class="simpleCart_shelfsermon products-right-grid1-add-cart">
-								<p><a class="item_add" href="#">Download Now </a></p>
+								<p> <span class="sermon_price"></span>
+									<a class="item_add"
+									   href="#"
+									   data-itemid="@lyric.LyricId"
+									   data-itemcategory="Lyric"
+									   data-title="@lyric.Title"
+									   data-medialink="@lyric.LyricMediaLink"
+									   data-videomedialink=""
+									   data-imagemedia="@lyric.LyricThumbnail">
+										Add to Cart
+									</a>
+								</p>
+								<p><a asp-controller="Lyrics" asp-action="DownloadLyric" asp-route-id="@lyric.LyricId">Download Now</a></p>
 							</div>
 						</div>
 					</div>

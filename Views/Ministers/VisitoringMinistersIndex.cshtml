@@ -1,0 +1,263 @@
+﻿@model IEnumerable<DCTStore.Models.Minister>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+
+
+
+
+<!-- breadcrumbs -->
+<div class="breadcrumbs">
+    <div class="container">
+        <ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+            <li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+            <li class="active">@ViewData["Title"]</li>
+        </ol>
+    </div>
+</div>
+<div class="products">
+    <div class="container">
+        <div class="col-md-4 products-left">
+
+
+            <div class="categories animated wow slideInUp" data-wow-delay=".5s">
+                <h3 class="collapsible">DCT Sermons</h3>
+                <div class="content">
+                    <ul class="cate">
+                        @foreach (var item in ViewBag.SermonTypes)
+                        {
+                            if (item != null && item.MediaType != null && item.MediaType.Type != null)
+                            {
+                                <li>
+
+                                    <a asp-area="" asp-controller="Sermons" asp-action="GetSermonByMediaType" asp-route-mediaType="@item.MediaType.Type">@item.MediaType.Type</a> <span>(@item.Count)</span>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+
+
+
+
+            <div class="categories animated wow slideInUp" data-wow-delay=".5s">
+                <h3 class="collapsible">Latest Sermons</h3>
+                <div class="content">
+                    @foreach (var sermon in ViewBag.RecentSermons)
+                    {
+                        <div class="new-products-grid-left">
+                            <a href="single.html"><img src="@sermon.MediaType.Image" alt=" " class="img-responsive" /></a>
+                        </div>
+                        <div class="new-products-grid-right">
+                            <h4><a asp-controller="Sermons" asp-action="Details" asp-route-id="@sermon.SermonId">@sermon.Title</a></h4>
+                            <div class="simpleCart_shelfItem new-products-grid-right-add-cart">
+                                <p>
+                                    <a class="item_add"
+                                       href="#"
+                                       data-itemid="@sermon.SermonId"
+                                       data-itemcategory="Sermon"
+                                       data-title="@sermon.Title"
+                                       data-medialink="@sermon.SermonMediaLink"
+                                       data-videomedialink="@sermon.SermonVideoLink"
+                                       data-imagemedia="@sermon.MediaType.Image">
+                                        Add to cart
+                                    </a>
+                                </p>
+                                <br>
+                                <p><a asp-controller="Sermons" asp-action="DownloadSermon" asp-route-id="@sermon.SermonId">Download Now </a></p>
+                                <br>
+                            </div>
+                        </div>
+                        <div class="clearfix"> </div>
+                    }
+                </div>
+            </div>
+
+            <div class="categories animated wow slideInUp" data-wow-delay=".5s">
+                <h3 class="collapsible">More Ministers</h3>
+                <div class="content">
+                    <ul class="cate">
+                        @foreach (var item in ViewBag.Ministers)
+                        {
+                            if (item != null)
+                            {
+                                <li>
+
+                                    <a asp-area="" asp-controller="Ministers" asp-action="GetSermonTopicByMinister" asp-route-mediaType="@item.Name">@item.Name</a>
+
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+        <style>
+            /* Hide content by default */
+            .content {
+                display: none;
+                overflow: hidden;
+                padding: 0 15px;
+            }
+
+            /* Style for collapsible header */
+            .collapsible {
+                cursor: pointer;
+                font-weight: bold;
+                padding: 10px;
+                margin: 0;
+                background-color: #f1f1f1;
+                border: 1px solid #ddd;
+                text-align: left;
+            }
+
+            /* Active state */
+            .active {
+                background-color: #ddd;
+            }
+        </style>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const collapsibles = document.querySelectorAll(".collapsible");
+
+                collapsibles.forEach(collapsible => {
+                    collapsible.addEventListener("click", function () {
+                        // Close any open content
+                        collapsibles.forEach(c => {
+                            if (c !== this) {
+                                c.classList.remove("active");
+                                c.nextElementSibling.style.display = "none";
+                            }
+                        });
+
+                        // Toggle the clicked content
+                        this.classList.toggle("active");
+                        const content = this.nextElementSibling;
+                        if (content.style.display === "block") {
+                            content.style.display = "none";
+                        } else {
+                            content.style.display = "block";
+                        }
+                    });
+                });
+            });
+        </script>
+        <div class="col-md-8 products-right">
+            <div class="products-right-grid">
+                <div class="products-right-grids animated wow slideInRight" data-wow-delay=".5s">
+                    
+                    <div>
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Create" class="btn btn-default">Create New</a>
+                        }
+                        
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+               
+            </div>
+            <div class="products-right-grids-bottom">
+                @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                {
+
+                    var counter = 0;
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-md-4 products-right-grids-bottom-grid">
+                            <div class="new-collections-grid1 products-right-grid1 animated wow slideInUp" data-wow-delay=".5s">
+                                <div class="new-collections-grid1-image">
+                                    <a href="single.html" class="product-image"><img src="@item.Image" alt="Thumbnail" class="img-thumbnail" /></a>
+                                    <div class="new-collections-grid1-image-pos products-right-grids-pos">
+                                        <a asp-action="Details" asp-route-id="@item.MinisterId">View Lyrics</a>
+                                    </div>
+                                </div>
+                                <h4><a href="single.html">@item.Name</a></h4>
+                                <div class="simpleCart_shelfItem products-right-grid1-add-cart">
+                                    <p><a asp-action="SermonsForMinister" asp-route-ministerId="@item.MinisterId">View Sermons</a></p>
+                                    <p><a asp-action="SermonTypeForMinister" asp-route-ministerId="@item.MinisterId">View Sermon Topic</a></p>
+                                    <p><a class="item_add" href="#">Edit</a></p>
+                                    <p><a class="item_add" href="#">Details</a></p>
+                                    <p><a class="item_add" href="#">Delete</a></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        counter++;
+
+                        if (counter % 3 == 0)
+                        {
+                            <div class="clearfix"></div>
+                        }
+                    }
+                }
+                else
+                {
+                    var counter = 0;
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-md-4 products-right-grids-bottom-grid">
+                            <div class="new-collections-grid1 products-right-grid1 animated wow slideInUp" data-wow-delay=".5s">
+                                <div class="new-collections-grid1-image">
+                                    <a href="single.html" class="product-image"><img src="@item.Image" alt="Thumbnail" class="img-thumbnail" /></a>
+                                    @* <div class="new-collections-grid1-image-pos products-right-grids-pos">
+                            <a asp-action="Details" asp-route-id="@item.MinisterId">View Lyrics</a>
+                            </div> *@
+                                </div>
+                                <h4><a href="single.html">@item.Name</a></h4>
+                                <div class="simpleCart_shelfItem products-right-grid1-add-cart">
+                                    <p><a asp-action="SermonsForMinister" asp-route-ministerId="@item.MinisterId">View Sermons</a></p>
+                                    <p><a asp-action="MinisterIndexTopics" asp-route-ministerId="@item.MinisterId">View Sermon Topic</a></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        counter++;
+
+                        if (counter % 3 == 0)
+                        {
+                            <div class="clearfix"></div>
+                        }
+                        
+                    }
+
+
+                }
+                
+                <div class="clearfix"> </div>
+            </div>
+            @if (ViewBag.TotalPages > 1)
+            {
+                <nav class="numbering animated wow slideInRight" data-wow-delay=".5s">
+                    <ul class="pagination paging">
+                        <li>
+                            <a href="?page=1" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="@(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a href="?page=@i">@i</a>
+                            </li>
+                        }
+                        <li>
+                            <a href="?page=@ViewBag.TotalPages" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+
+        </div>
+        <div class="clearfix"> </div>
+    </div>
+</div>
+<!-- //breadcrumbs -->

@@ -17,6 +17,8 @@ namespace DCTStore.Data
         public DbSet<MediaType> MediaTypes { get; set; }
         public DbSet<Music> Musics { get; set; }
         public DbSet<Lyric> Lyrics { get; set; }
-        public DbSet<DCTStore.Models.SermonType> SermonType { get; set; } = default!;
+        public DbSet<LyricType> LyricTypes { get; set; }
+		public DbSet<DCTStore.Models.SermonType> SermonType { get; set; } = default!;
+        public DbSet<DownloadAllMedia> DownloadAllMedia { get; set; }
     }
 }
