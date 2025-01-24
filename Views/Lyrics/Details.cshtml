@@ -6,356 +6,205 @@
 
 
 @{
-	ViewData["Title"] = "Details";
+    ViewData["Title"] = "Details";
 }
 
 <!-- breadcrumbs -->
 <div class="breadcrumbs">
-	<div class="container">
-		<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
-			<li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
-			<li class="active">Single Page</li>
-		</ol>
-	</div>
+    <div class="container">
+        <ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+            <li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+            <li class="active">Single Page</li>
+        </ol>
+    </div>
 </div>
 <!-- //breadcrumbs -->
 <!-- single -->
 <div class="single">
-	<div class="container">
-		<div class="col-md-8 single-right">
-			<div style="text-align:center;margin-bottom:20px">
-				<h3>@Model.CurrentLyric.Title </h3>
-			</div>
+    <div class="container">
+        <div class="col-md-8 single-right">
+            <div style="text-align:center;margin-bottom:20px">
+                <h3>@Model.CurrentLyric.Title </h3>
+            </div>
 
-			<div style="margin-bottom:20px">
-				<div style="text-align:center;margin-bottom:20px">
-					<h3>Sing Along</h3>
-				</div>
-				<!-- Embed Lyric using Lyric ID, lyric inform of powerpoint -->
-				<div class="embed-responsive embed-responsive-16by9">
-					<iframe class="embed-responsive-item" src="https://view.officeapps.live.com/op/embed.aspx?src=@Html.Raw(Model.CurrentLyric.LyricMediaLink)"
-							width="100%" height="600px" frameborder="0"></iframe>
-				</div>
-			</div>
+            <div style="margin-bottom:20px">
+                <div style="text-align:center;margin-bottom:20px">
+                    <h3>Sing Along</h3>
+                </div>
+                <!-- Embed Lyric using Lyric ID, lyric inform of powerpoint -->
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="https://view.officeapps.live.com/op/embed.aspx?src=@Html.Raw(Model.CurrentLyric.LyricMediaLink)"
+                            width="100%" height="600px" frameborder="0"></iframe>
+                </div>
+            </div>
 
-			<div>
-				<h5>Download Track & Share</h5>
-				<br />
-				<div class="occasion-cart">
-					<a asp-controller="Lyrics" asp-action="DownloadLyric" asp-route-id="CurrentLyric.LyricId">Download Now</a>
+            <div>
+                <h5>Download Track & Share</h5>
+                <br />
+                <div class="occasion-cart">
+                    <a class="item_add" href="#">add to cart </a>
+                    <a class="item_add" href="#">Download Item </a>
+                    <a asp-action="Index">Back to List</a>
+                </div>
 
-					<a class="item_add"
-					   href="#"
-					   data-itemid="CurrentLyric.LyricId"
-					   data-itemcategory="Lyric"
-					   data-title="CurrentLyric.Title"
-					   data-medialink="CurrentLyric.LyricMediaLink"
-					   data-videomedialink=""
-					   data-imagemedia="CurrentLyric.LyricThumbnail">
-						Add to Cart
-					</a>
-
-					<a asp-action="Index">Back to List</a>
-				</div>
-
-				@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-				{
-					<h5>Admin</h5>
-					<br />
-					<div class="occasion-cart">
-						<a asp-action="Edit" asp-route-id="@Model?.CurrentLyric.LyricId">Edit</a>
-						<a asp-action="Index">Back to List</a>
-					</div>
-				}
-			</div>
-			<div class="social">
-				<div class="social-left">
-					<p>Share On :</p>
-				</div>
-				<div class="social-right">
-					<ul class="social-icons">
-						<li><a href="#" class="facebook"></a></li>
-						<li><a href="#" class="twitter"></a></li>
-						<li><a href="#" class="g"></a></li>
-						<li><a href="#" class="instagram"></a></li>
-					</ul>
-				</div>
-				<div class="clearfix"> </div>
-			</div>
+                @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                {
+                    <h5>Admin</h5>
+                    <br />
+                    <div class="occasion-cart">
+                        <a asp-action="Edit" asp-route-id="@Model?.CurrentLyric.LyricId">Edit</a>
+                        <a asp-action="Index">Back to List</a>
+                    </div>
+                }
+            </div>
+            <div class="social">
+                <div class="social-left">
+                    <p>Share On :</p>
+                </div>
+                <div class="social-right">
+                    <ul class="social-icons">
+                        <li><a href="#" class="facebook"></a></li>
+                        <li><a href="#" class="twitter"></a></li>
+                        <li><a href="#" class="g"></a></li>
+                        <li><a href="#" class="instagram"></a></li>
+                    </ul>
+                </div>
+                <div class="clearfix"> </div>
+            </div>
 
 
-		</div>
-		<div class="col-md-4 products-left">
-			<div class="filter-price animated wow slideInUp" data-wow-delay=".5s">
-				<h3>Filter By Category</h3>
-				<div class="content">
-					<ul class="dropdown-menu1">
-						<li>
-							<a href="">
-								<div id="slider-range"></div>
-								<input type="text" id="amount" style="border: 0" />
-							</a>
-						</li>
-					</ul>
-				</div>
-				<script type="text/javascript">
-					$(window).load(function () {
-						$("#slider-range").slider({
-							range: true,
-							min: 0,
-							max: 100000,
-							values: [10000, 60000],
-							slide: function (event, ui) {
-								$("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
-							}
-						});
-						$("#amount").val("$" + $("#slider-range").slider("values", 0) + " - $" + $("#slider-range").slider("values", 1));
-					});
-				</script>
-				<script type="text/javascript" src="js/jquery-ui.min.js"></script>
-			</div>
-
-			<div class="categories animated wow slideInUp" data-wow-delay=".5s">
-				<h3 class="collapsible">DCT Lyrics Categories</h3>
-				<div class="content">
-					<ul class="cate">
-						@foreach (var item in ViewBag.LyricTypes)
-						{
-							if (item != null && item.LyricType != null && item.LyricType.Type != null)
-							{
-								<li>
-
-									<a asp-area="" asp-controller="Lyrics" asp-action="GetLyricsByMediaType" asp-route-mediaType="@item.LyricType.Type">@item.LyricType.Type</a> <span>(@item.Count)</span>
-								</li>
-							}
-						}
-					</ul>
-				</div>
-			</div>
-
-			<div class="categories animated wow slideInUp" data-wow-delay=".5s">
-				<h3 class="collapsible">Category Lyrics</h3>
-				<div class="content">
-					<ul class="cate">
-						@* @foreach (var item in ViewBag.musicbymediatype)
-						{
-						if (item != null && item.MediaType != null)
-						{
-						<li>
-						<a asp-area="" asp-controller="Musics" asp-action="GetSongsByMediaType" asp-route-mediaType="@item.MediaType.Type">@item.MediaType.Type</a> <span>(@item.Count)</span>
+        </div>
+        <div class="col-md-4 products-left">
+            <div class="filter-price animated wow slideInUp" data-wow-delay=".5s">
+                <h3>Filter By Category</h3>
+                <ul class="dropdown-menu1">
+                    <li>
+                        <a href="">
+                            <div id="slider-range"></div>
+                            <input type="text" id="amount" style="border: 0" />
+                        </a>
+                    </li>
+                </ul>
+                <script type='text/javascript'>
+                    //<![CDATA[
+                    $(window).load(function () {
+                        $("#slider-range").slider({
+                            range: true,
+                            min: 0,
+                            max: 100000,
+                            values: [10000, 60000],
+                            slide: function (event, ui) {
+                                $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+                            }
+                        });
+                        $("#amount").val("$" + $("#slider-range").slider("values", 0) + " - $" + $("#slider-range").slider("values", 1));
 
 
-						</li>
-						}
-						} *@
+                    });//]]>
+                </script>
+                <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+                <!---->
+            </div>
+            <div class="categories animated wow slideInUp" data-wow-delay=".5s">
+                <h3>DCT Music</h3>
+                <ul class="cate">
+                    <li><a href="products.html">Best Selling</a> <span>(15)</span></li>
+                    <li><a href="products.html">Home Collections</a> <span>(16)</span></li>
+                    <ul>
+                        <li><a href="products.html">Cookware</a> <span>(2)</span></li>
+                        <li><a href="products.html">New Arrivals</a> <span>(0)</span></li>
+                        <li><a href="products.html">Home Decore</a> <span>(1)</span></li>
+                    </ul>
+                    <li><a href="products.html">Decorations</a> <span>(15)</span></li>
+                    <ul>
+                        <li><a href="products.html">Wall Clock</a> <span>(2)</span></li>
+                        <li><a href="products.html">New Arrivals</a> <span>(0)</span></li>
+                        <li><a href="products.html">Lighting</a> <span>(1)</span></li>
+                        <li><a href="products.html">Top Brands</a> <span>(0)</span></li>
+                    </ul>
+                </ul>
+            </div>
 
-						@foreach (var lyric in ViewBag.lyricsbymediatype)
-						{
-							<div class="new-products-grid-left">
-								<a><img src="@lyric.LyricThumbnail" alt=" " class="img-responsive" /></a>
-							</div>
-							<div class="new-products-grid-right">
-								<h4><a asp-action="Details" asp-route-id="@lyric.LyricId">@lyric.Title</a></h4>
-								<div class="simpleCart_shelfItem new-products-grid-right-add-cart">
-									<p>
-										<a class="item_add"
-										   href="#"
-										   data-itemid="@lyric.LyricId"
-										   data-itemcategory="Lyric"
-										   data-title="@lyric.Title"
-										   data-medialink="@lyric.LyricMediaLink"
-										   data-videomedialink=""
-										   data-imagemedia="@lyric.LyricThumbnail">
-											Add to Cart
-										</a>
-									</p>
-									<br>
-									<p><a asp-controller="Lyrics" asp-action="DownloadLyric" asp-route-id="@lyric.LyricId">Download Now </a></p>
-									<br>
-								</div>
-							</div>
-							<div class="clearfix"> </div>
-						}
-					</ul>
-				</div>
-			</div>
+            <div class="categories animated wow slideInUp" data-wow-delay=".5s">
+                <h3>DCT Sermons</h3>
+                <ul class="cate">
+                    <li><a href="products.html">Best Selling</a> <span>(15)</span></li>
+                    <li><a href="products.html">Home Collections</a> <span>(16)</span></li>
+                    <ul>
+                        <li><a href="products.html">Cookware</a> <span>(2)</span></li>
+                        <li><a href="products.html">New Arrivals</a> <span>(0)</span></li>
+                        <li><a href="products.html">Home Decore</a> <span>(1)</span></li>
+                    </ul>
+                    <li><a href="products.html">Decorations</a> <span>(15)</span></li>
+                    <ul>
+                        <li><a href="products.html">Wall Clock</a> <span>(2)</span></li>
+                        <li><a href="products.html">New Arrivals</a> <span>(0)</span></li>
+                        <li><a href="products.html">Lighting</a> <span>(1)</span></li>
+                        <li><a href="products.html">Top Brands</a> <span>(0)</span></li>
+                    </ul>
+                </ul>
+            </div>
 
-
-			<div class="categories animated wow slideInUp" data-wow-delay=".5s">
-				<h3 class="collapsible">Latest DCT Lyrics</h3>
-				<div class="content">
-					@foreach (var lyrics in ViewBag.LatestUploads)
-					{
-						<div class="new-products-grid-left">
-							<a><img src="@lyrics.LyricThumbnail" alt=" " class="img-responsive" /></a>
-						</div>
-						<div class="new-products-grid-right">
-							<h4><a asp-action="Details" asp-route-id="@lyrics.LyricId">@lyrics.Title</a></h4>
-							<div class="simpleCart_shelfItem new-products-grid-right-add-cart">
-								<p>
-									<a class="item_add"
-									   href="#"
-									   data-itemid="@lyrics.LyricId"
-									   data-itemcategory="Lyric"
-									   data-title="@lyrics.Title"
-									   data-medialink="@lyrics.LyricMediaLink"
-									   data-videomedialink=""
-									   data-imagemedia="@lyrics.LyricThumbnail">
-										Add to Cart
-									</a>
-								</p>
-								<br>
-								<p><a asp-controller="Lyrics" asp-action="DownloadLyric" asp-route-id="@lyrics.LyricId">Download Now </a></p>
-								<br>
-							</div>
-						</div>
-						<div class="clearfix"> </div>
-					}
-				</div>
-			</div>
-
-
-			<div class="categories animated wow slideInUp" data-wow-delay=".5s">
-				<h3 class="collapsible">Category Music</h3>
-				<div class="content">
-					<ul class="cate">
-						@* @foreach (var item in ViewBag.musicbymediatype)
-						{
-							if (item != null && item.MediaType != null)
-							{
-								<li>
-									<a asp-area="" asp-controller="Musics" asp-action="GetSongsByMediaType" asp-route-mediaType="@item.MediaType.Type">@item.MediaType.Type</a> <span>(@item.Count)</span>
-
-
-								</li>
-							}
-						} *@
-
-						@foreach (var music in ViewBag.musicbymediatype)
-						{
-							<div class="new-products-grid-left">
-								<a><img src="@music.MediaType.Image" alt=" " class="img-responsive" /></a>
-							</div>
-							<div class="new-products-grid-right">
-								<h4><a asp-controller="Musics" asp-action="Details" asp-route-id="@music.MusicId">@music.Title</a></h4>
-								<div class="simpleCart_shelfItem new-products-grid-right-add-cart">
-									<p>
-										<a class="item_add"
-										   href="#"
-										   data-itemid="@music.MusicId"
-										   data-itemcategory="Music"
-										   data-title="@music.Title"
-										   data-medialink="@music.MusicMediaLink"
-										   data-videomedialink=""
-										   data-imagemedia="@music.MediaType.Image">
-											Add to cart
-										</a>
-									</p>
-									<br>
-									<p><a asp-controller="Musics" asp-action="DownloadMusic" asp-route-id="@music.MusicId">Download Now </a></p>
-									<br>
-								</div>
-							</div>
-							<div class="clearfix"> </div>
-						}
-					</ul>
-				</div>
-			</div>
-		</div>
-
-		<style>
-			/* Hide content by default */
-			.content {
-				display: none;
-				overflow: hidden;
-				padding: 0 15px;
-			}
-
-			/* Style for collapsible header */
-			.collapsible {
-				cursor: pointer;
-				font-weight: bold;
-				padding: 10px;
-				margin: 0;
-				background-color: #f1f1f1;
-				border: 1px solid #ddd;
-				text-align: left;
-			}
-
-			/* Active state */
-			.active {
-				background-color: #ddd;
-			}
-		</style>
-
-		<script>
-			document.addEventListener("DOMContentLoaded", function () {
-				const collapsibles = document.querySelectorAll(".collapsible");
-
-				collapsibles.forEach(collapsible => {
-					collapsible.addEventListener("click", function () {
-						// Close any open content
-						collapsibles.forEach(c => {
-							if (c !== this) {
-								c.classList.remove("active");
-								c.nextElementSibling.style.display = "none";
-							}
-						});
-
-						// Toggle the clicked content
-						this.classList.toggle("active");
-						const content = this.nextElementSibling;
-						if (content.style.display === "block") {
-							content.style.display = "none";
-						} else {
-							content.style.display = "block";
-						}
-					});
-				});
-			});
-		</script>
-
-
-
-
-
-		<div class="clearfix"> </div>
-	</div>
+        </div>
+        <div class="clearfix"> </div>
+    </div>
 </div>
 <!-- //single -->
 <!-- single-related-products -->
 <div class="single-related-products">
-	<div class="container">
-		<h3 class="animated wow slideInUp" data-wow-delay=".5s">More DCT Lyrics</h3>
-		
-		<div class="new-collections-grids">
-			@if (Model.RelatedLyric.Count != null)
-			{
-				@foreach (var lyric in Model.RelatedLyric)
-				{
-					<div class="col-md-3 new-collections-grid">
-						<div class="new-collections-grid1 animated wow slideInUp text-center" data-wow-delay=".5s">
-							<div class="new-collections-grid1-image">
-								<a href="single.html" class="product-image"><img src="@lyric.LyricThumbnail" alt="Thumbnail" class="img-thumbnail" /></a>
-								<div class="new-collections-grid1-image-pos products-right-grids-pos">
-									<a asp-action="Details" asp-route-id="@lyric.LyricId">View Preaching</a>
-								</div>
-							</div>
-							<h4><a href="single.html">@lyric.Title</a></h4>
-							<h4><a href="single.html">@lyric.LyricType.Type</a></h4>
-							<div class="simpleCart_shelfsermon products-right-grid1-add-cart">
-								<p><a class="item_add" href="#">Download Now </a></p>
-							</div>
-						</div>
-					</div>
+    <div class="container">
+        <h3 class="animated wow slideInUp" data-wow-delay=".5s">Related Products</h3>
+        <p class="est animated wow slideInUp" data-wow-delay=".5s">
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+            deserunt mollit anim id est laborum.
+        </p>
+        <div class="new-collections-grids">
+            @if (Model.RelatedLyric.Count != null)
+            {
+                @foreach (var lyric in Model.RelatedLyric)
+                {
+                    <div class="col-md-3 new-collections-grid">
+                        <div class="new-collections-grid1 animated wow slideInUp text-center" data-wow-delay=".5s">
+                            <div class="new-collections-grid1-image">
+                                <a href="single.html" class="product-image"><img src="@lyric.LyricThumbnail" alt="Thumbnail" class="img-thumbnail" /></a>
+                                <div class="new-collections-grid1-image-pos products-right-grids-pos">
+                                    <a asp-action="Details" asp-route-id="@lyric.LyricId">View Preaching</a>
+                                </div>
+                                <div class="new-collections-grid1-right products-right-grids-pos-right">
+                                    <div class="rating">
+                                        <div class="rating-left">
+                                            <img src="~/store/images/2.png" alt=" " class="img-responsive">
+                                        </div>
+                                        <div class="rating-left">
+                                            <img src="~/store/images/2.png" alt=" " class="img-responsive">
+                                        </div>
+                                        <div class="rating-left">
+                                            <img src="~/store/images/2.png" alt=" " class="img-responsive">
+                                        </div>
+                                        <div class="rating-left">
+                                            <img src="~/store/images/1.png" alt=" " class="img-responsive">
+                                        </div>
+                                        <div class="rating-left">
+                                            <img src="~/store/images/1.png" alt=" " class="img-responsive">
+                                        </div>
+                                        <div class="clearfix"> </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4><a href="single.html">@lyric.Title</a></h4>
+                            <div class="simpleCart_shelfsermon products-right-grid1-add-cart">
+                                <p><a class="item_add" href="#">Download Now </a></p>
+                            </div>
+                        </div>
+                    </div>
 
-				}
-			}
-			else
-			{
-				<p>No recent sermons available.</p>
-			}
-		</div>
-	</div>
+                }
+            }
+            else
+            {
+                <p>No recent sermons available.</p>
+            }
+        </div>
+    </div>
 </div>
 <!-- //single-related-products -->

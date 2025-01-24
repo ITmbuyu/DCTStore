@@ -6,6 +6,5 @@
         public string Type { get; set; }
         public int ? MinisterId { get; set; }
         public virtual Minister? Minister { get; set; }
-        public string TypeDownloadLink { get; set; }
     }
 }

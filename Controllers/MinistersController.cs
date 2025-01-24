@@ -7,10 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DCTStore.Data;
 using DCTStore.Models;
-using DocumentFormat.OpenXml.Wordprocessing;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using DCTStore.ViewModels;
-using DCTStore.Data.Migrations;
 
 namespace DCTStore.Controllers
 {
@@ -25,283 +21,15 @@ namespace DCTStore.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-		// GET: Ministers
-		public async Task<IActionResult> Index(int page = 1, int pageSize = 9)
-		{
-			var totalItems = await _context.Ministers.CountAsync();
-			var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-			var paginatedMinisters = await _context.Ministers
-				.Include(m => m.MininsterType)
-				.Skip((page - 1) * pageSize)
-				.Take(pageSize)
-				.ToListAsync();
-
-			ViewBag.TotalPages = totalPages;
-			ViewBag.CurrentPage = page;
-
-			return View(paginatedMinisters);
-		}
-
-
-		// Get Local Ministers
-		public async Task<IActionResult> LocalMinistersIndex(int page = 1, int pageSize = 9)
-		{
-			var sermonTypesWithCounts = await _context.Sermons
-				.GroupBy(m => m.MediaType)
-				.Select(group => new { MediaType = group.Key, Count = group.Count() })
-				.ToListAsync();
-
-			var latestUploads = await _context.Sermons
-				.OrderByDescending(m => m.DatePreached)
-				.Take(3)
-				.ToListAsync();
-
-			//add a viewbag that will hold the ministers
-			ViewBag.Ministers = await _context.Ministers
-				.Where(m => m.MininsterTypeId == 1)
-				.OrderBy(x => Guid.NewGuid())
-				.Take(10)
-				.ToListAsync();
-
-			var localministers = _context.Ministers
-				.Include(m => m.MininsterType)
-				.Where(s => s.MinisterId != 7 && s.MininsterTypeId == 1);
-
-			var totalItems = await localministers.CountAsync();
-			var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-			var paginatedMinisters = await localministers
-				.Skip((page - 1) * pageSize)
-				.Take(pageSize)
-				.ToListAsync();
-
-			ViewBag.TotalPages = totalPages;
-			ViewBag.CurrentPage = page;
-            ViewBag.SermonTypes = sermonTypesWithCounts;
-            ViewBag.RecentSermons = latestUploads;
-            ViewData["Title"] = "Local Ministers"; // Set the title for the view
-
-			return View(paginatedMinisters);
-		}
-
-
-		// Get Visiting Ministers except for Brother Ewarld Frank
-		public async Task<IActionResult> VisitoringMinistersIndex(int page = 1, int pageSize = 9)
-		{
-            var sermonTypesWithCounts = await _context.Sermons
-                .GroupBy(m => m.MediaType)
-                .Select(group => new { MediaType = group.Key, Count = group.Count() })
-                .ToListAsync();
-
-            var latestUploads = await _context.Sermons
-                .OrderByDescending(m => m.DatePreached)
-                .Take(3)
-                .ToListAsync();
-
-            //add a viewbag that will hold the ministers
-            ViewBag.Ministers = await _context.Ministers
-                .Where(m => m.MininsterTypeId == 2)
-                .OrderBy(x => Guid.NewGuid())
-                .Take(10)
-                .ToListAsync();
-
-            var visitingministers = _context.Ministers
-				.Include(m => m.MininsterType)
-				.Where(m => m.MininsterTypeId == 2 && m.Name != "Brother Ewarld Frank");
-
-			var totalItems = await visitingministers.CountAsync();
-			var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-			var paginatedMinisters = await visitingministers
-				.Skip((page - 1) * pageSize)
-				.Take(pageSize)
-				.ToListAsync();
-
-			ViewBag.TotalPages = totalPages;
-			ViewBag.CurrentPage = page;
-            ViewBag.SermonTypes = sermonTypesWithCounts;
-            ViewBag.RecentSermons = latestUploads;
-            ViewData["Title"] = " DCT Visiting Ministers"; // Set the title for the view
-
-            return View(paginatedMinisters);
-		}
-
-
-		// Get: Sermons for a specific Minister
-		public async Task<IActionResult> SermonsForMinister(int? ministerId, int page = 1, int pageSize = 8)
-		{
-            var sermonTypesWithCounts = await _context.Sermons
-                .GroupBy(m => m.MediaType)
-                .Select(group => new { MediaType = group.Key, Count = group.Count() })
-                .ToListAsync();
-
-            var latestUploads = await _context.Sermons
-                .OrderByDescending(m => m.DatePreached)
-                .Take(3)
-                .ToListAsync();
-
-            //add a viewbag that will hold the ministers
-            ViewBag.Ministers = await _context.Ministers
-                .Where(m => m.MininsterTypeId == 2)
-                .OrderBy(x => Guid.NewGuid())
-                .Take(10)
-                .ToListAsync();
-
-            var minister = await _context.Ministers
-				.FirstOrDefaultAsync(m => m.MinisterId == ministerId);
-
-			if (minister == null)
-			{
-				return NotFound();
-			}
-
-			var sermons = _context.Sermons
-				.Include(s => s.MediaType)
-				.Where(s => s.MinisterId == ministerId);
-
-			var totalItems = await sermons.CountAsync();
-			var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-			var paginatedSermons = await sermons
-				.Skip((page - 1) * pageSize)
-				.Take(pageSize)
-				.ToListAsync();
-
-			ViewBag.TotalPages = totalPages;
-			ViewBag.CurrentPage = page;
-            ViewBag.SermonTypes = sermonTypesWithCounts;
-            ViewBag.RecentSermons = latestUploads;
-            ViewData["Title"] = " DCT Sermons"; // Set the title for the view
-
-            return View(paginatedSermons);
-		}
-
-
-		// Get: Sermon Type for a specific Minister
-		public async Task<IActionResult> MinisterIndexTopics(int? MinisterId, int page = 1, int pageSize = 9)
+        // GET: Ministers
+        public async Task<IActionResult> Index()
         {
-            if (MinisterId == null || _context.Sermons == null)
-            {
-                return NotFound();
-            }
+            var applicationDbContext = _context.Ministers.Include(m => m.MininsterType);
+            return View(await applicationDbContext.ToListAsync());
+        }
 
-			var sermonTypesWithCounts = await _context.Sermons
-	.GroupBy(m => m.MediaType)
-	.Select(group => new { MediaType = group.Key, Count = group.Count() })
-	.ToListAsync();
-
-			var latestUploads = await _context.Sermons
-				.OrderByDescending(m => m.DatePreached)
-				.Take(3)
-				.ToListAsync();
-
-			//add a viewbag that will hold the ministers
-			ViewBag.Ministers = await _context.Ministers
-				.Where(m => m.MininsterTypeId == 1)
-				.OrderBy(x => Guid.NewGuid())
-				.Take(10)
-				.ToListAsync();
-
-			
-
-			var recentSermonsTopics = _context.Sermons
-				.Where(s => s.Minister.MinisterId == MinisterId)
-				.GroupBy(s => s.SermonTypeId)
-				.Select(g => new SermonSubjects
-				{
-					SermonTypeId = g.Key.Value,
-					SermonType = g.First().SermonType.Type,
-					MediaType = g.First().MediaType,
-					DatePreached = g.First().DatePreached,
-					MinisterName = g.First().Minister.Name
-				})
-				.OrderByDescending(s => s.DatePreached);
-
-			var totalItems = await recentSermonsTopics.CountAsync();
-			var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-			var paginatedTopics = await recentSermonsTopics
-				.Skip((page - 1) * pageSize)
-				.Take(pageSize)
-				.ToListAsync();
-
-			ViewBag.TotalPages = totalPages;
-			ViewBag.CurrentPage = page;
-			ViewBag.SermonTypes = sermonTypesWithCounts;
-			ViewBag.RecentSermons = latestUploads;
-			ViewData["Title"] = " DCT Sermon Topics"; // Set the title for the view
-
-			return View(paginatedTopics);
-		}
-
-
-		public async Task<IActionResult> GetSermonTopicByMinister(string mediaType, int page = 1, int pageSize = 9)
-		{
-			var sermonTypesWithCounts = await _context.Sermons
-				.GroupBy(m => m.MediaType)
-				.Select(group => new { MediaType = group.Key, Count = group.Count() })
-				.ToListAsync();
-
-			var latestUploads = await _context.Sermons
-				.OrderByDescending(m => m.DatePreached)
-				.Take(3)
-				.ToListAsync();
-
-			//add a viewbag that will hold the ministers
-			ViewBag.Ministers = await _context.Ministers
-				.Where(m => m.MininsterTypeId == 1)
-				.OrderBy(x => Guid.NewGuid())
-				.Take(10)
-				.ToListAsync();
-
-			//get the sermontype count by minister name of the current sermon use ministerid
-			var sermonTypesWithCountsByMinister = await _context.Sermons
-				.Where(s => s.Minister.Name == mediaType)
-				.GroupBy(s => s.SermonType)
-				.Select(group => new { SermonType = group.Key, Count = group.Count() })
-				.ToListAsync();
-
-
-			//pass the sermon type count by minister name to the view
-			ViewBag.SermonTypesByMinister = sermonTypesWithCountsByMinister;
-
-            ViewBag.SermonTypes = sermonTypesWithCounts;
-			ViewBag.RecentSermons = latestUploads;
-
-			var recentSermonsTopics = _context.Sermons
-				.Where(s => s.Minister.Name == mediaType)
-				.GroupBy(s => s.SermonTypeId)
-				.Select(g => new SermonSubjects
-				{
-					SermonTypeId = g.Key.Value,
-					SermonType = g.First().SermonType.Type,
-					MediaType = g.First().MediaType,
-					DatePreached = g.First().DatePreached,
-					MinisterName = g.First().Minister.Name
-				})
-				.OrderByDescending(s => s.DatePreached);
-
-			var totalItems = await recentSermonsTopics.CountAsync();
-			var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-			var paginatedTopics = await recentSermonsTopics
-				.Skip((page - 1) * pageSize)
-				.Take(pageSize)
-				.ToListAsync();
-
-			ViewBag.SermonTypes = sermonTypesWithCounts;
-			ViewBag.RecentSermons = latestUploads;
-			ViewBag.TotalPages = totalPages;
-			ViewBag.CurrentPage = page;
-			ViewData["Title"] = mediaType + " Sermon Topics"; // Set the title for the view
-
-			return View(paginatedTopics);
-		}
-
-
-		// GET: Ministers/Details/5
-		public async Task<IActionResult> Details(int? id)
+        // GET: Ministers/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Ministers == null)
             {
@@ -476,14 +204,14 @@ namespace DCTStore.Controllers
             {
                 _context.Ministers.Remove(minister);
             }
-
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool MinisterExists(int id)
         {
-            return (_context.Ministers?.Any(e => e.MinisterId == id)).GetValueOrDefault();
+          return (_context.Ministers?.Any(e => e.MinisterId == id)).GetValueOrDefault();
         }
     }
 }

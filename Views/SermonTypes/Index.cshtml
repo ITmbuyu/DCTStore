@@ -18,9 +18,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Minister)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TypeDownloadLink)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -34,12 +31,8 @@
                 @Html.DisplayFor(modelItem => item.Minister.MinisterId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TypeDownloadLink)
-             </td>
-            <td>
                 <a asp-action="Edit" asp-route-id="@item.SermonTypeId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.SermonTypeId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SermonTypeId">Delete</a>
                 <a asp-action="Delete" asp-route-id="@item.SermonTypeId">Delete</a>
             </td>
         </tr>

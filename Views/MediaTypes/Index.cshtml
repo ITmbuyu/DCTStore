@@ -18,9 +18,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Image)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TypeDownloadLink)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -32,9 +29,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Image)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TypeDownloadLink)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.MediaTypeId">Edit</a> |
